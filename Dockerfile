@@ -10,7 +10,7 @@ WORKDIR /usr/local/tomcat/webapps/
 COPY --from=builder /app/target/ProjectWeb-1.0.war ProjectWeb.war
 
 # EXPOSE không ảnh hưởng đến runtime, chỉ dùng cho tài liệu
-EXPOSE 8080
+EXPOSE 8088
 
 # Thay thế server.xml để Tomcat lấy PORT từ biến môi trường
 COPY server.xml /usr/local/tomcat/conf/server.xml
