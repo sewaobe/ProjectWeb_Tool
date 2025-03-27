@@ -1,16 +1,11 @@
-# Sử dụng Maven để build trước khi copy file WAR
-FROM maven:3.9.6-eclipse-temurin-21 AS builder
-WORKDIR /app
-COPY . .
-RUN mvn clean package -DskipTests
-
-# Chạy WAR trên Tomcat
 FROM tomcat:10.1-jdk21
 WORKDIR /usr/local/tomcat/webapps/
 COPY --from=builder /app/target/ProjectWeb-1.0.war ProjectWeb.war
 
-# Sử dụng biến môi trường PORT do Render cung cấp
-ENV PORT=8080
+# Cấu hình Tomcat để dùng $PORT
+RUN sed -i 's/port="8080"/port="'"$PORT"'"/' /usr/local/tomcat/conf/server.xml
+
+# Expose mặc định (Render sẽ tự ánh xạ)
 EXPOSE 8080
 
-CMD ["sh", "-c", "catalina.sh run"]
+CMD ["catalina.sh", "run"]
