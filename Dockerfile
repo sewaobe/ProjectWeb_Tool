@@ -9,8 +9,11 @@ FROM tomcat:10.1-jdk21
 WORKDIR /usr/local/tomcat/webapps/
 COPY --from=builder /app/target/ProjectWeb-1.0.war ProjectWeb.war
 
-# Mặc định Tomcat chạy trên 8080
+# EXPOSE không ảnh hưởng đến runtime, chỉ dùng cho tài liệu
 EXPOSE 8080
 
-# Khi container chạy, chỉnh server.xml để dùng PORT
-CMD sed -i "s/port=\"8080\"/port=\"$PORT\"/" /usr/local/tomcat/conf/server.xml && catalina.sh run
+# Kiểm tra giá trị của $PORT
+RUN echo "Using PORT: $PORT"
+
+# Đặt Tomcat lắng nghe đúng $PORT mà Render cấp
+CMD ["sh", "-c", "export CATALINA_OPTS='-Dserver.port=$PORT' && catalina.sh run"]
