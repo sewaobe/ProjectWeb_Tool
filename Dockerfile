@@ -9,11 +9,10 @@ FROM tomcat:10.1-jdk21
 WORKDIR /usr/local/tomcat/webapps/
 COPY --from=builder /app/target/ProjectWeb-1.0.war ProjectWeb.war
 
-# Cấu hình Tomcat để lắng nghe đúng $PORT
-RUN sed -i 's/port="8080"/port="'$PORT'"/' /usr/local/tomcat/conf/server.xml
-
-# EXPOSE không ảnh hưởng đến runtime, chỉ để tài liệu
+# EXPOSE không ảnh hưởng đến runtime, chỉ dùng cho tài liệu
 EXPOSE 8080
 
-# Chạy Tomcat với biến môi trường $PORT
+# Thay thế server.xml để Tomcat lấy PORT từ biến môi trường
+COPY server.xml /usr/local/tomcat/conf/server.xml
+
 CMD ["catalina.sh", "run"]
