@@ -9,8 +9,8 @@ FROM tomcat:10.1-jdk21
 WORKDIR /usr/local/tomcat/webapps/
 COPY --from=builder /app/target/ProjectWeb-1.0.war ProjectWeb.war
 
-# Cấu hình Tomcat để dùng $PORT
-RUN sed -i 's/port="8080"/port="'"$PORT"'"/' /usr/local/tomcat/conf/server.xml
-
+# Mặc định Tomcat chạy trên 8080
 EXPOSE 8080
-CMD ["catalina.sh", "run"]
+
+# Khi container chạy, chỉnh server.xml để dùng PORT
+CMD sed -i "s/port=\"8080\"/port=\"$PORT\"/" /usr/local/tomcat/conf/server.xml && catalina.sh run
